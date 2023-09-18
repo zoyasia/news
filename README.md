@@ -30,3 +30,17 @@ Avec le package ayant pour alias `orm-fixtures`, création d'un ensemble de donn
 Fichier : [`AppFixtures.php`](src/DataFixtures/AppFixtures.php)
 
 Utilisation de la librairie [Faker](https://fakerphp.github.io/)
+
+### Affichage de liste
+
+Injection de dépendance : [`ArticleRepository`](src/Repository/ArticleRepository.php)
+
+### Affichage d'un élément
+
+Utilisation du ParamConverter dans [`ArticleController`](https://github.com/HB-R5-2023/news/blob/main/src/Controller/ArticleController.php#L12-L13) : installation **manuelle** d'un bundle récemment abandonné : le SensioFrameworkExtraBundle.
+
+```bash
+composer require sensio/framework-extra-bundle
+```
+
+À partir de la version 6.2 de Symfony, le ParamConverter, pour lire une entité, est remplacé par [`EntityValueResolver`](https://symfony.com/doc/current/doctrine.html#automatically-fetching-objects-entityvalueresolver).
