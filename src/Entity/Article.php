@@ -26,6 +26,9 @@ class Article
   #[ORM\Column(type: Types::DATE_MUTABLE)]
   private ?\DateTimeInterface $dateCreated = null;
 
+  #[ORM\ManyToOne(inversedBy: 'articles')]
+  private ?Category $category = null;
+
   public function getId(): ?int
   {
     return $this->id;
@@ -75,6 +78,18 @@ class Article
   public function setDateCreated(\DateTimeInterface $dateCreated): static
   {
     $this->dateCreated = $dateCreated;
+
+    return $this;
+  }
+
+  public function getCategory(): ?Category
+  {
+    return $this->category;
+  }
+
+  public function setCategory(?Category $category): static
+  {
+    $this->category = $category;
 
     return $this;
   }
