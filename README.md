@@ -44,3 +44,17 @@ composer require sensio/framework-extra-bundle
 ```
 
 À partir de la version 6.2 de Symfony, le ParamConverter, pour lire une entité, est remplacé par [`EntityValueResolver`](https://symfony.com/doc/current/doctrine.html#automatically-fetching-objects-entityvalueresolver).
+
+### Formulaires
+
+Création d'un formulaire de newsletter avec un champ email.
+
+Structure du formulaire : [NewsletterType](src/Form/NewsletterType.php)
+
+Contrôleur pour gérer le formulaire : [IndexController](src/Controller/IndexController.php)
+
+### Envoi d'email
+
+Utilisation du composant `symfony/mailer`.
+
+Type-hint de la `MailerInterface` dans le contrôleur `newsletterSubscribe`, dans la classe [`IndexController`](src/Controller/IndexController.php)
