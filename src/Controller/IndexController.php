@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Newsletter;
 use App\Form\NewsletterType;
 use App\Repository\ArticleRepository;
+use App\Repository\NewsletterRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +31,7 @@ class IndexController extends AbstractController
   }
 
   #[Route('/newsletter/subscribe', name: 'newsletter_subscribe')]
-  public function newsletterSubscribe(Request $request): Response
+  public function newsletterSubscribe(Request $request, EntityManagerInterface $em): Response
   {
     // 1 - J'initialise une instance de mon entité
     $newsletterEmail = new Newsletter();
@@ -40,11 +42,20 @@ class IndexController extends AbstractController
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-      // Persistance des données
+      $em->persist($newsletterEmail);
+      $em->flush();
+      $this->addFlash("success", "Bravo ! Votre email a bien été enregistré !");
+      return $this->redirectToRoute("app_index");
     }
 
     return $this->renderForm('newsletter/subscribe.html.twig', [
       'newsletterForm' => $form
     ]);
+  }
+
+  #[Route('/newsletter/subscribe/confirm', name: 'newsletter_sub_confirm')]
+  public function newsletterSubscribeConfirm(): Response
+  {
+    return $this->render('newsletter/subscribe.confirm.html.twig');
   }
 }
