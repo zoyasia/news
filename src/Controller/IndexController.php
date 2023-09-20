@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
@@ -31,8 +33,11 @@ class IndexController extends AbstractController
   }
 
   #[Route('/newsletter/subscribe', name: 'newsletter_subscribe')]
-  public function newsletterSubscribe(Request $request, EntityManagerInterface $em): Response
-  {
+  public function newsletterSubscribe(
+    Request $request,
+    EntityManagerInterface $em,
+    MailerInterface $mailer
+  ): Response {
     // 1 - J'initialise une instance de mon entité
     $newsletterEmail = new Newsletter();
     // 2 - Je crée un formulaire et y relie l'instance d'entité créée
@@ -44,6 +49,15 @@ class IndexController extends AbstractController
     if ($form->isSubmitted() && $form->isValid()) {
       $em->persist($newsletterEmail);
       $em->flush();
+      // Envoi d'email
+      $email = (new Email())
+        ->from('admin@hb-corp.com')
+        ->to($newsletterEmail->getEmail())
+        ->subject('Inscription à la newsletter')
+        ->text('Merci, votre adresse ' . $newsletterEmail->getEmail() . ' a été enregistrée');
+      // ->html('<p>See Twig integration for better HTML integration!</p>');
+
+      $mailer->send($email);
       // $this->addFlash("success", "Bravo ! Votre email a bien été enregistré !");
       return $this->redirectToRoute("newsletter_sub_confirm");
     }
