@@ -44,8 +44,8 @@ class IndexController extends AbstractController
     if ($form->isSubmitted() && $form->isValid()) {
       $em->persist($newsletterEmail);
       $em->flush();
-      $this->addFlash("success", "Bravo ! Votre email a bien été enregistré !");
-      return $this->redirectToRoute("app_index");
+      // $this->addFlash("success", "Bravo ! Votre email a bien été enregistré !");
+      return $this->redirectToRoute("newsletter_sub_confirm");
     }
 
     return $this->renderForm('newsletter/subscribe.html.twig', [
@@ -54,8 +54,11 @@ class IndexController extends AbstractController
   }
 
   #[Route('/newsletter/subscribe/confirm', name: 'newsletter_sub_confirm')]
-  public function newsletterSubscribeConfirm(): Response
+  public function newsletterSubscribeConfirm(ArticleRepository $articleRepository): Response
   {
-    return $this->render('newsletter/subscribe.confirm.html.twig');
+    $articles = $articleRepository->findBy([], ['dateCreated' => 'DESC'], 10);
+    return $this->render('newsletter/subscribe.confirm.html.twig', [
+      'articles' => $articles
+    ]);
   }
 }

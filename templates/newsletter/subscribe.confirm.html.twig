@@ -8,6 +8,14 @@
 		Bravo ! Merci pour votre inscription.
 	</h1>
 
+	<h2>Retrouvez nos derniers articles :</h2>
+
+	{% for article in articles %}
+		<h3>
+			<a href="{{ path('app_article', { 'id': article.id }) }}">{{ article.title }}</a>
+		</h3>
+	{% endfor %}
+
 	<p>
 		<a href="{{ path('app_index') }}" class="btn btn-success">Retour à l'accueil</a>
 	</p>
