@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Newsletter;
 use App\Form\NewsletterType;
+use App\Mail\NewsletterSubscribedConfirmation;
 use App\Repository\ArticleRepository;
 use App\Repository\NewsletterRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +37,7 @@ class IndexController extends AbstractController
   public function newsletterSubscribe(
     Request $request,
     EntityManagerInterface $em,
-    MailerInterface $mailer
+    NewsletterSubscribedConfirmation $notificationService
   ): Response {
     // 1 - J'initialise une instance de mon entité
     $newsletterEmail = new Newsletter();
@@ -49,15 +50,7 @@ class IndexController extends AbstractController
     if ($form->isSubmitted() && $form->isValid()) {
       $em->persist($newsletterEmail);
       $em->flush();
-      // Envoi d'email
-      $email = (new Email())
-        ->from('admin@hb-corp.com')
-        ->to($newsletterEmail->getEmail())
-        ->subject('Inscription à la newsletter')
-        ->text('Merci, votre adresse ' . $newsletterEmail->getEmail() . ' a été enregistrée');
-      // ->html('<p>See Twig integration for better HTML integration!</p>');
-
-      $mailer->send($email);
+      $notificationService->send($newsletterEmail);
       // $this->addFlash("success", "Bravo ! Votre email a bien été enregistré !");
       return $this->redirectToRoute("newsletter_sub_confirm");
     }
